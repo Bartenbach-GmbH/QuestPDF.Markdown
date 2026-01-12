@@ -370,6 +370,10 @@ internal sealed class MarkdownRenderer : IComponent
 
     private IContainer Render(HeadingBlock block, IContainer pdf)
     {
+        pdf = pdf
+            .PaddingTop(_options.HeadingPaddingTop)
+            .PaddingBottom(_options.HeadingPaddingBottom);
+
         float fontSize = Math.Max(0, _options.CalculateHeadingSize(block.Level));
 
         switch (block.Level)

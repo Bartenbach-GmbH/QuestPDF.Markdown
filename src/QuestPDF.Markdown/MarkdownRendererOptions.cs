@@ -106,7 +106,9 @@ public class MarkdownRendererOptions
     public float ListItemUnorderedDelimiterSizeLevel4 { get; set; }
 
     public Color HeadingTextColor { get; set; } = Colors.Black;
-    
+    public float HeadingPaddingTop { get; set; }
+    public float HeadingPaddingBottom { get; set; }
+
     /// <summary>
     /// The formula used to calculate heading sizes based on their level.
     /// </summary>
