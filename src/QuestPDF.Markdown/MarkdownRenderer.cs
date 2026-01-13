@@ -70,38 +70,42 @@ internal sealed class MarkdownRenderer : IComponent
     {
         if (block.Count == 0) return pdf;
 
-        pdf.Column(col =>
-        {
-            foreach (var item in block)
+        pdf
+            .Preview("MD:Container", _options.DesignDebug)
+            .Column(col =>
             {
-                // Blocks inside a list get the same spacing as the list items themselves
-                col.Spacing(item.Parent is ListBlock or ListItemBlock
-                    ? _options.ListItemSpacing
-                    : _options.ParagraphSpacing);
+                foreach (var item in block)
+                {
+                    // Blocks inside a list get the same spacing as the list items themselves
+                    col.Spacing(item.Parent is ListBlock or ListItemBlock
+                        ? _options.ListItemSpacing
+                        : _options.ParagraphSpacing);
 
-                Render(item, col.Item());
-            }
-        });
+                    Render(item, col.Item());
+                }
+            });
 
         return pdf;
     }
 
     private IContainer Render(Table table, IContainer pdf)
     {
-        pdf.Table(td =>
-        {
-            td.ColumnsDefinition(cd =>
+        pdf
+            .Preview("MD:Table", _options.DesignDebug)
+            .Table(td =>
             {
-                foreach (var col in table.ColumnDefinitions)
+                td.ColumnsDefinition(cd =>
                 {
-                    // Widths are provided as a percentage
-                    cd.RelativeColumn(col.Width > 0 ? col.Width : 1f);
-                }
-            });
+                    foreach (var col in table.ColumnDefinitions)
+                    {
+                        // Widths are provided as a percentage
+                        cd.RelativeColumn(col.Width > 0 ? col.Width : 1f);
+                    }
+                });
 
-            var rows = table.OfType<TableRow>().ToList();
-            RenderTableRows(table, rows, td);
-        });
+                var rows = table.OfType<TableRow>().ToList();
+                RenderTableRows(table, rows, td);
+            });
 
         return pdf;
     }
@@ -146,6 +150,7 @@ internal sealed class MarkdownRenderer : IComponent
             .Background(rowIdx % 2 == 1
                 ? _options.TableEvenRowBackgroundColor
                 : _options.TableOddRowBackgroundColor)
+            .Preview("MD:TableCell", _options.DesignDebug)
             .Padding(5);
 
         switch (columnDefinition.Alignment)
@@ -183,7 +188,9 @@ internal sealed class MarkdownRenderer : IComponent
         }
         else if (block.Lines.Count != 0)
         {
-            pdf.Text(block.Lines.ToString())
+            pdf
+                .Preview("MD:LeafBlock", _options.DesignDebug)
+                .Text(block.Lines.ToString())
                 .ApplyStyles(_textProperties.TextStyles.ToList());
         }
 
@@ -202,7 +209,9 @@ internal sealed class MarkdownRenderer : IComponent
 
     private IContainer Render(QuoteBlock block, IContainer pdf)
     {
-        pdf = pdf.BorderLeft(_options.BlockQuoteBorderThickness)
+        pdf = pdf
+            .Preview("MD:Quote", _options.DesignDebug)
+            .BorderLeft(_options.BlockQuoteBorderThickness)
             .BorderColor(_options.BlockQuoteBorderColor)
             .PaddingLeft(10);
 
@@ -249,6 +258,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 1:
                         var delimiterTextLevel1 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemOrderedDelimiterPaddingLeftLevel1)
                             .Width(_options.ListItemOrderedDelimiterWidthLevel1)
                             .TranslateY(_options.ListItemOrderedDelimiterTranslateYLevel1)
@@ -262,6 +272,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 2:
                         var delimiterTextLevel2 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemOrderedDelimiterPaddingLeftLevel2)
                             .Width(_options.ListItemOrderedDelimiterWidthLevel2)
                             .TranslateY(_options.ListItemOrderedDelimiterTranslateYLevel2)
@@ -275,6 +286,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 3:
                         var delimiterTextLevel3 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemOrderedDelimiterPaddingLeftLevel3)
                             .Width(_options.ListItemOrderedDelimiterWidthLevel3)
                             .TranslateY(_options.ListItemOrderedDelimiterTranslateYLevel3)
@@ -288,6 +300,7 @@ internal sealed class MarkdownRenderer : IComponent
                     default:
                         var delimiterTextLevel4 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemOrderedDelimiterPaddingLeftLevel4)
                             .Width(_options.ListItemOrderedDelimiterWidthLevel4)
                             .TranslateY(_options.ListItemOrderedDelimiterTranslateYLevel4)
@@ -306,6 +319,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 1:
                         var delimiterTextLevel1 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemUnorderedDelimiterPaddingLeftLevel1)
                             .Width(_options.ListItemUnorderedDelimiterWidthLevel1)
                             .TranslateY(_options.ListItemUnorderedDelimiterTranslateYLevel1)
@@ -320,6 +334,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 2:
                         var delimiterTextLevel2 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemUnorderedDelimiterPaddingLeftLevel2)
                             .Width(_options.ListItemUnorderedDelimiterWidthLevel2)
                             .TranslateY(_options.ListItemUnorderedDelimiterTranslateYLevel2)
@@ -334,6 +349,7 @@ internal sealed class MarkdownRenderer : IComponent
                     case 3:
                         var delimiterTextLevel3 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemUnorderedDelimiterPaddingLeftLevel3)
                             .Width(_options.ListItemUnorderedDelimiterWidthLevel3)
                             .TranslateY(_options.ListItemUnorderedDelimiterTranslateYLevel3)
@@ -348,6 +364,7 @@ internal sealed class MarkdownRenderer : IComponent
                     default:
                         var delimiterTextLevel4 = li
                             .AutoItem()
+                            .Preview("MD:Delimiter", _options.DesignDebug)
                             .PaddingLeft(_options.ListItemUnorderedDelimiterPaddingLeftLevel4)
                             .Width(_options.ListItemUnorderedDelimiterWidthLevel4)
                             .TranslateY(_options.ListItemUnorderedDelimiterTranslateYLevel4)
@@ -371,6 +388,7 @@ internal sealed class MarkdownRenderer : IComponent
     private IContainer Render(HeadingBlock block, IContainer pdf)
     {
         pdf = pdf
+            .Preview("MD:Heading", _options.DesignDebug)
             .PaddingTop(_options.HeadingPaddingTop)
             .PaddingBottom(_options.HeadingPaddingBottom);
 
@@ -415,7 +433,9 @@ internal sealed class MarkdownRenderer : IComponent
 
     private IContainer Render(ThematicBreakBlock block, IContainer pdf)
     {
-        pdf.LineHorizontal(_options.HorizontalRuleThickness)
+        pdf
+            .Preview("MD:ThematicBreak", _options.DesignDebug)
+            .LineHorizontal(_options.HorizontalRuleThickness)
             .LineColor(_options.HorizontalRuleColor);
 
         return pdf;
@@ -426,7 +446,9 @@ internal sealed class MarkdownRenderer : IComponent
         // Push any styles that should be applied to the entire block on the stack
         _textProperties.TextStyles.Push(t => t.FontFamily(_options.CodeFont));
 
-        pdf = pdf.Background(_options.CodeBlockBackground).Padding(5);
+        pdf = pdf
+            .Preview("MD:Code", _options.DesignDebug)
+            .Background(_options.CodeBlockBackground).Padding(5);
         pdf = Render(block as LeafBlock, pdf);
 
         // Pop any styles that were applied to the entire block off the stack

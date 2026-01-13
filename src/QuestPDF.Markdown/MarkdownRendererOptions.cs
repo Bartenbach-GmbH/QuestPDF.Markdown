@@ -11,6 +11,7 @@ public class MarkdownRendererOptions
     /// Render DebugAreas in the output
     /// </summary>
     public bool Debug { get; set; }
+    public bool DesignDebug { get; set; }
 
     public TextHorizontalAlignment ParagraphAlignment { get; set; } = TextHorizontalAlignment.Left;
 
